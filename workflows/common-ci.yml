@@ -1,9 +1,15 @@
 name: BeeBuilt CI
 
+# Defines actions to perform on push and pull requests
 on:
   push:
-    branches: [main]
+    branches:
+      - "dev/*"
+      - "main"
   pull_request:
+    branches:
+      - dev
+      - main
 
 jobs:
   build:
