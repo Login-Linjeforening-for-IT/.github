@@ -2,6 +2,17 @@ name: BeeBuilt CI/CD Pipeline
 
 on:
   workflow_call:
+    secrets:
+      OP_SERVICE_ACCOUNT_TOKEN:
+        required: true
+      DOCKER_TOKEN:
+        required: true
+      DOCKER_REGISTRY:
+        required: true
+      DOCKER_USER:
+        required: true
+      PAT:
+        required: true
 
 env:
   GIT_USER_NAME: BeeBuilt Bot
