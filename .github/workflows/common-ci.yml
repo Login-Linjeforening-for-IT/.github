@@ -1,10 +1,7 @@
 name: BeeBuilt CI/CD Pipeline
 
 on:
-  push:
-    branches: ["dev", "main"]
-  pull_request:
-    branches: ["dev", "main"]
+  workflow_call:
 
 env:
   GIT_USER_NAME: BeeBuilt Bot
