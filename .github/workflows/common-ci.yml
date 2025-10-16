@@ -21,7 +21,7 @@ env:
 jobs:
   fix-version:
     name: 🧩 Fix & Update Version
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.set_tag.outputs.new_tag }}
     steps:
@@ -148,7 +148,7 @@ jobs:
 
   rebase:
     name: 🔄 Rebase from main to dev
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: fix-version
     if: github.ref == 'refs/heads/main'
     steps:
@@ -174,7 +174,7 @@ jobs:
 
   build:
     name: 🐳 Build Containers
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: fix-version
 
     steps:
@@ -311,7 +311,7 @@ jobs:
 
   update:
     name: 🔄 Update Kubernetes Repo
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: [build, fix-version]
     steps:
       - name: Determine repo path
