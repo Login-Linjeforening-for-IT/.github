@@ -176,6 +176,8 @@ jobs:
     name: 🐳 Build Containers
     runs-on: ubuntu-latest
     needs: fix-version
+    outputs:
+      image_tag: ${{ steps.tag_push.outputs.image_tag }}
 
     steps:
       - name: Checkout
@@ -281,12 +283,22 @@ jobs:
           done
 
       - name: Tag & Push
+        id: tag_push
         run: |
           IMAGE="${{ secrets.DOCKER_REGISTRY }}/tekkom/dev/"
           VERSION=${{ needs.fix-version.outputs.new_tag }}
 
           echo "Image: $IMAGE"
           echo "Version: $VERSION"
+
+          if [ "$GITHUB_REF" = "refs/heads/dev" ]; then
+            IMAGE_TAG="${VERSION}-dev"
+          else
+            IMAGE_TAG="$VERSION"
+          fi
+
+          echo "Image Tag: $IMAGE_TAG"
+          echo "::set-output name=image_tag::$IMAGE_TAG"
 
           docker compose build
 
@@ -305,8 +317,8 @@ jobs:
               exit 1
             fi
 
-            docker tag "$IMAGE_ID" "$IMAGE$SERVICE:$VERSION"
-            docker push "$IMAGE$SERVICE:$VERSION"
+            docker tag "$IMAGE_ID" "$IMAGE$SERVICE:$IMAGE_TAG"
+            docker push "$IMAGE$SERVICE:$IMAGE_TAG"
           done
 
   update:
@@ -337,7 +349,7 @@ jobs:
         run: |
           set -e
           PROJECT_NAME="${GITHUB_REPOSITORY##*/}"
-          NEW_TAG="${{ needs.fix-version.outputs.new_tag }}"
+          NEW_TAG="${{ needs.build.outputs.image_tag }}"
           REGISTRY="${DOCKER_REGISTRY}/tekkom/dev"
           BRANCH="main"
 
